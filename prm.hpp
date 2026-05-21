@@ -24,13 +24,38 @@ public:
 
     vector<string> arg;
 
-    struct IstrStrc
+    struct Istr
     {
         string abrv;
         string nm;
 
-
+        int cnt;
     };
+
+    vector<Istr> istr{};
+
+
+
+    int setIstr(const string &nm)
+    {
+        istr.push_back(Istr{nm,nullptr});
+
+        return 0;
+    }
+
+    int setIstr(const string &nm, const string &abrv)
+    {
+        istr.push_back(Istr{nm, abrv});
+
+        return 0;
+    }
+
+    int setIstr(const string &nm, const string &abrv, const int &cnt)
+    {
+        istr.push_back(Istr{nm, abrv, cnt});
+
+        return 0;
+    }
 
     template<typename T>
     T getArgIdx(int idx, T typ);
@@ -108,6 +133,17 @@ public:
 
         return arg[psn+2];
     }
+
+    string getLst()
+    {
+        return arg.back();
+    }
+
+    //
+    // string getFst()
+    // {
+    //     return arg.front();
+    // }
 
     Prm(int argCnt, char* argIn[]): argCnt(argCnt), argIn(argIn)
     {
