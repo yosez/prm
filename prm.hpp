@@ -84,6 +84,39 @@ public:
         return flg;
     }
 
+
+    ///PROCESSING
+    bool getIstrPrcsng(const string &istrIn)
+    {
+
+        bool flg=false;
+
+        std::for_each(istr.begin(), istr.end(), [istrIn, &flg](const Istr &i) {
+
+            cout<<i.nm<<":"<<istrIn<<endl;
+            if (istrIn.starts_with("--"))
+            {
+                if (istrIn.substr(2).compare(i.nm)==0)
+                {
+                    cout<<"chk ok nm"<<endl;
+                    flg=true;
+                }
+
+            }
+            else if (istrIn.starts_with("-"))
+            {
+                if (istrIn.substr(1).compare(i.abrv)==0)
+                {
+                    cout<<"chk ok abrv"<<endl;
+                    flg=true;
+                }
+            }
+
+        });
+
+        return flg;
+    }
+
     string getIstrFrst(string istr)
     {
         int psn=-1;
