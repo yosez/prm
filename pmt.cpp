@@ -19,7 +19,7 @@ int main(int argCnt, char* arg[])
     //cout<<prm.getIstr("prm")<<endl;
 
     cout<<prm.getIstrFrst("prmfrst")<<endl;
-    cout<<prm.getIstrScnd("prmScd")<<endl;
+    cout<<prm.getIstrScnd("prmscd")<<endl;
 
     std::cout << "pmt prm" << std::endl;
     return 0;
