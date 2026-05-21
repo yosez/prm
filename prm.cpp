@@ -8,5 +8,5 @@ template<typename T>
 T Prm::getArgIdx<T>(int idx, T typ)
 {
 
-}
+};
 

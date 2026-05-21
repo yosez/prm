@@ -26,10 +26,10 @@ public:
 
     struct Istr
     {
-        string abrv;
-        string nm;
+        string abrv{};
+        string nm{};
 
-        int cnt;
+        int cnt{0};
     };
 
     vector<Istr> istr{};
@@ -38,7 +38,7 @@ public:
 
     int setIstr(const string &nm)
     {
-        istr.push_back(Istr{nm,nullptr});
+        istr.push_back(Istr{nm});
 
         return 0;
     }
@@ -91,12 +91,14 @@ public:
 
         bool flg=false;
 
-        std::for_each(istr.begin(), istr.end(), [istrIn, &flg](const Istr &i) {
+        std::for_each(istr.begin(), istr.end(), [vct = istr, istrIn, &flg](const Istr &i) {
 
+
+            cout<<vct[0].nm<<":"<<istrIn<<endl;
             cout<<i.nm<<":"<<istrIn<<endl;
             if (istrIn.starts_with("--"))
             {
-                if (istrIn.substr(2).compare(i.nm)==0)
+                if (i.nm.empty() ==false && istrIn.substr(2).compare(i.nm)==0)
                 {
                     cout<<"chk ok nm"<<endl;
                     flg=true;
@@ -105,7 +107,7 @@ public:
             }
             else if (istrIn.starts_with("-"))
             {
-                if (istrIn.substr(1).compare(i.abrv)==0)
+                if (i.abrv.empty()==false && istrIn.substr(1).compare(i.abrv)==0)
                 {
                     cout<<"chk ok abrv"<<endl;
                     flg=true;
@@ -188,7 +190,7 @@ public:
         {
             arg[i] = argIn[i];
 
-            cout<<"prm "<<arg[i]<<endl;
+            cout<<"prm ltr: "<<arg[i]<<endl;
         }
 
 

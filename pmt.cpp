@@ -18,8 +18,14 @@ int main(int argCnt, char* arg[])
 
     //cout<<prm.getIstr("prm")<<endl;
 
-    cout<<prm.getIstrFrst("prmfrst")<<endl;
-    cout<<prm.getIstrScnd("prmscd")<<endl;
+    // cout<<prm.getIstrFrst("prmfrst")<<endl;
+    // cout<<prm.getIstrScnd("prmscd")<<endl;
+    //
+    cout<<prm.setIstr("help")<<endl;
+
+    cout<<"set istr"<<endl;
+
+    cout<<(prm.getIstrPrcsng("help")?"true":"false")<<endl;
 
     std::cout << "pmt prm" << std::endl;
     return 0;
