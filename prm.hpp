@@ -13,6 +13,9 @@ using std::for_each;
 //e.g. --host 127.0.0.1            single
 //e.g. --on 127.0.0.1:8080          pair
 //e.g.
+
+
+
 class Prm
 {
 public:
@@ -20,6 +23,14 @@ public:
     char** argIn;
 
     vector<string> arg;
+
+    struct IstrStrc
+    {
+        string abrv;
+        string nm;
+
+
+    };
 
     template<typename T>
     T getArgIdx(int idx, T typ);
