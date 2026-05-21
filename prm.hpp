@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <print>
 
 using std::cout;
 using std::string;
@@ -26,8 +27,9 @@ public:
 
     struct Istr
     {
-        string abrv{};
         string nm{};
+        string abrv{};
+
 
         int cnt{0};
     };
@@ -91,32 +93,78 @@ public:
 
         bool flg=false;
 
+
+
+        cout<<istr.size()<<":"<<istr[0].nm<<":"<<istrIn<<endl;
+
+        //find in instr
         std::for_each(istr.begin(), istr.end(), [vct = istr, istrIn, &flg](const Istr &i) {
 
 
             cout<<vct[0].nm<<":"<<istrIn<<endl;
             cout<<i.nm<<":"<<istrIn<<endl;
-            if (istrIn.starts_with("--"))
-            {
-                if (i.nm.empty() ==false && istrIn.substr(2).compare(i.nm)==0)
-                {
-                    cout<<"chk ok nm"<<endl;
-                    flg=true;
-                }
 
-            }
-            else if (istrIn.starts_with("-"))
+            if (i.nm.empty() ==false && istrIn.compare(i.nm)==0)
             {
-                if (i.abrv.empty()==false && istrIn.substr(1).compare(i.abrv)==0)
-                {
-                    cout<<"chk ok abrv"<<endl;
-                    flg=true;
-                }
+                cout<<"chk ok nm"<<endl;
+                flg=true;
             }
+
+            else if (i.abrv.empty()==false && istrIn.compare(i.abrv)==0)
+            {
+                cout<<"chk ok abrv"<<endl;
+                flg=true;
+            }
+
 
         });
 
-        return flg;
+        bool argFlg=false;
+        //find in arguments
+        std::for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s) {
+            if (s.starts_with("--"))
+            {
+                if (s.substr(2).compare(istrIn)==0)
+                {
+                    argFlg=true;
+                }
+            }
+            else if (s.starts_with("-"))
+            {
+                if (s.substr(1).compare(istrIn)==0)
+                {
+                    argFlg=true;
+                }
+            }
+        });
+
+        return flg&&argFlg;
+    }
+
+    string getIstrFrstPrcs(string istrIn)
+    {
+        int psn=-1;
+
+        vector<Istr>::iterator it= istr.begin();
+
+        bool istrFlg=false;
+
+        std::for_each(istr.begin(), istr.end(), [&istrIn, &it, &istrFlg](const Istr &s) {
+            if (s.nm.empty()==false && s.nm.compare(istrIn))
+            {
+                istrFlg=true;
+            }
+            else if (s.abrv.empty()==false && istrIn.compare(s.abrv))
+            {
+                istrFlg=true;
+            }
+
+            ++it;
+        });
+
+        bool argFlg =false;
+
+        std::for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s){})
     }
 
     string getIstrFrst(string istr)
