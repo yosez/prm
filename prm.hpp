@@ -67,38 +67,37 @@ public:
         return string(arg[idx]);
     }
 
-    bool getIstr(const string &istr)
-    {
-
-        bool flg=false;
-
-        std::for_each(arg.begin(), arg.end(), [istr, &flg](const string &s) {
-
-            cout<<s<<":"<<istr<<endl;
-            if (s.compare(istr)==0)
-            {
-                cout<<"chk ok"<<endl;
-                flg=true;
-            }
-
-        });
-
-        return flg;
-    }
+    // bool getIstr(const string &istr)
+    // {
+    //
+    //     bool flg=false;
+    //
+    //     std::for_each(arg.begin(), arg.end(), [istr, &flg](const string &s) {
+    //
+    //         cout<<s<<":"<<istr<<endl;
+    //         if (s.compare(istr)==0)
+    //         {
+    //             cout<<"chk ok"<<endl;
+    //             flg=true;
+    //         }
+    //
+    //     });
+    //
+    //     return flg;
+    // }
 
 
     ///PROCESSING
-    bool getIstrPrcsng(const string &istrIn)
+    bool getIstr(const string &istrIn)
     {
 
-        bool flg=false;
-
+        bool istrFlg=false;
 
 
         cout<<istr.size()<<":"<<istr[0].nm<<":"<<istrIn<<endl;
 
         //find in instr
-        std::for_each(istr.begin(), istr.end(), [vct = istr, istrIn, &flg](const Istr &i) {
+        for_each(istr.begin(), istr.end(), [vct = istr, istrIn, &istrFlg](const Istr &i) {
 
 
             cout<<vct[0].nm<<":"<<istrIn<<endl;
@@ -107,13 +106,13 @@ public:
             if (i.nm.empty() ==false && istrIn.compare(i.nm)==0)
             {
                 cout<<"chk ok nm"<<endl;
-                flg=true;
+                istrFlg=true;
             }
 
             else if (i.abrv.empty()==false && istrIn.compare(i.abrv)==0)
             {
                 cout<<"chk ok abrv"<<endl;
-                flg=true;
+                istrFlg=true;
             }
 
 
@@ -121,7 +120,7 @@ public:
 
         bool argFlg=false;
         //find in arguments
-        std::for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s) {
+        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s) {
             if (s.starts_with("--"))
             {
                 if (s.substr(2).compare(istrIn)==0)
@@ -138,18 +137,86 @@ public:
             }
         });
 
-        return flg&&argFlg;
+        return istrFlg&&argFlg;
     }
 
-    string getIstrFrstPrcs(string istrIn)
+    string getIstrFst(string istrIn)
     {
         int psn=-1;
 
-        vector<Istr>::iterator it= istr.begin();
+        vector<string>::iterator itr= arg.begin();
 
         bool istrFlg=false;
 
-        std::for_each(istr.begin(), istr.end(), [&istrIn, &it, &istrFlg](const Istr &s) {
+        //find in instruction
+        for_each(istr.begin(), istr.end(), [&istrIn,  &istrFlg](const Istr &s) {
+            if (s.nm.empty()==false && s.nm.compare(istrIn)==0)
+            {
+                cout<<"istr flg ok"<<endl;
+                istrFlg=true;
+            }
+            else if (s.abrv.empty()==false && s.abrv.compare(istrIn)==0)
+            {
+                cout<<"istr flg ok"<<endl;
+                istrFlg=true;
+            }
+
+
+        });
+
+        bool argFlg =false;
+
+        //find in
+        //arg is input arguments
+        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg, &itr, &psn, bgn= arg.begin()](const string &s) {
+            if (istrIn.starts_with("--"))
+            {
+                //arg inst cmp istrIn
+                if (s.substr(2).compare(istrIn)==0)
+                {
+                    cout<<"arg flg ok"<<endl;
+                    argFlg=true;
+
+                    psn = itr - bgn;
+                }
+            }
+            else if (s.starts_with("-"))
+            {
+                if (s.substr(2).compare(istrIn)==0)
+                {
+                    cout<<"arg flg ok"<<endl;
+                    argFlg=true;
+
+                    psn = itr - bgn;
+                }
+            }
+
+            ++itr;
+        });
+
+        //psn = argFlg && istrFlg ? itr - arg.begin() : -1;
+
+        cout<<"psn: "<<psn<<":"<<arg[psn]<<endl;
+
+        if (psn ==-1)
+        {
+            return string{};
+        }
+
+        return arg[psn+1];
+
+    }
+
+    string getIstrScd(string istrIn)
+    {
+        int psn=-1;
+
+        vector<string>::iterator itr= arg.begin();
+
+        bool istrFlg=false;
+
+        //find in instruction
+        for_each(istr.begin(), istr.end(), [&istrIn,  &istrFlg](const Istr &s) {
             if (s.nm.empty()==false && s.nm.compare(istrIn))
             {
                 istrFlg=true;
@@ -159,63 +226,98 @@ public:
                 istrFlg=true;
             }
 
-            ++it;
+
         });
 
         bool argFlg =false;
 
-        std::for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s){})
-    }
-
-    string getIstrFrst(string istr)
-    {
-        int psn=-1;
-
-        std::for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
-
-            //cout<<*it<<":"<<istr<<endl;
-            if (s.compare(istr)==0)
+        //find in
+        //arg is input arguments
+        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg, &itr, &psn, bgn = arg.begin()](const string &s) {
+            if (istrIn.starts_with("--"))
             {
+                //arg inst cmp istrIn
+                if (s.substr(2).compare(istrIn)==0)
+                {
+                    argFlg=true;
 
-                psn = it - bgn;
+                    psn = itr - bgn;
+                }
+            }
+            else if (s.starts_with("-"))
+            {
+                if (s.substr(2).compare(istrIn)==0)
+                {
+                    argFlg=true;
 
+                    psn = itr - bgn;
+                }
             }
 
-            ++it;
+            ++itr;
         });
 
-        if (psn==-1)
+        cout<<"psn: "<<psn<<":"<<arg[psn]<<endl;
+
+        if (psn ==-1)
         {
-            return nullptr;
+            return string{};
         }
 
-        return arg[psn+1];
-    }
-
-    string getIstrScnd(string istr)
-    {
-        int psn=-1;
-
-        std::for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
-
-            //cout<<*it<<":"<<istr<<endl;
-            if (s.compare(istr)==0)
-            {
-
-                psn = it - bgn;
-
-            }
-
-            ++it;
-        });
-
-        if (psn==-1)
-        {
-            return nullptr;
-        }
-
+        ///TODO ex
         return arg[psn+2];
+
     }
+
+    // string getIstrFrst(string istr)
+    // {
+    //     int psn=-1;
+    //
+    //     for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
+    //
+    //         //cout<<*it<<":"<<istr<<endl;
+    //         if (s.compare(istr)==0)
+    //         {
+    //
+    //             psn = it - bgn;
+    //
+    //         }
+    //
+    //         ++it;
+    //     });
+    //
+    //     if (psn==-1)
+    //     {
+    //         return nullptr;
+    //     }
+    //
+    //     return arg[psn+1];
+    // }
+    //
+    // string getIstrScnd(string istr)
+    // {
+    //     int psn=-1;
+    //
+    //     std::for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
+    //
+    //         //cout<<*it<<":"<<istr<<endl;
+    //         if (s.compare(istr)==0)
+    //         {
+    //
+    //             psn = it - bgn;
+    //
+    //         }
+    //
+    //         ++it;
+    //     });
+    //
+    //     if (psn==-1)
+    //     {
+    //         return nullptr;
+    //     }
+    //
+    //     return arg[psn+2];
+    // }
 
     string getLst()
     {

@@ -25,9 +25,10 @@ int main(int argCnt, char* arg[])
 
     cout<<"set istr"<<endl;
 
-    cout<<(prm.getIstrPrcsng("help")?"true":"false")<<endl;
+    cout<<(prm.getIstr("help")?"true":"false")<<endl;
+    cout<<prm.getIstrFst("help")<<endl;
 
-    std::cout << "pmt prm" << std::endl;
+
     return 0;
 }
 
