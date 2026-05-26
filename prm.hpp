@@ -25,6 +25,7 @@ public:
 
     vector<string> arg;
 
+    //prm pair "--output a.txt" or "-o a.txt"
     struct Istr
     {
         string nm{};
@@ -36,7 +37,13 @@ public:
 
     vector<Istr> istr{};
 
+    //lst prm
+    bool lstArg{false};
+    string lst{};
 
+    //fst prm
+    bool fstArg{false};
+    string fst{};
 
     int setIstr(const string &nm)
     {
@@ -57,6 +64,48 @@ public:
         istr.push_back(Istr{nm, abrv, cnt});
 
         return 0;
+    }
+
+    int setFst()
+    {
+        fstArg=true;
+        return 0;
+    }
+
+    string getFst()
+    {
+        if (fstArg ==false || arg.front().starts_with("-"))
+        {
+            return string{};
+        }
+
+        return arg.front();
+    }
+
+    string getLstLtr()
+    {
+        return arg.back();
+    }
+
+    string getFstLtr()
+    {
+        return arg.front();
+    }
+
+    int setLst()
+    {
+        lstArg=true;
+        return 0;
+    }
+
+    string getLst()
+    {
+        if (lstArg ==false || arg.back().starts_with("-"))
+        {
+            return string{};
+        }
+
+        return arg.back();
     }
 
     template<typename T>
@@ -207,6 +256,8 @@ public:
 
     }
 
+
+    ///TODO bdr chk
     string getIstrScd(string istrIn)
     {
         int psn=-1;
@@ -319,10 +370,7 @@ public:
     //     return arg[psn+2];
     // }
 
-    string getLst()
-    {
-        return arg.back();
-    }
+
 
     //
     // string getFst()
