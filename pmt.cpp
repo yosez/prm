@@ -5,9 +5,13 @@
 #include "./prm.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <print>
 
+using std::string;
 using std::cout;
 using std::endl;
+using std::print;
 
 
 int main(int argCnt, char* arg[])
@@ -28,6 +32,11 @@ int main(int argCnt, char* arg[])
     cout<<(prm.getIstr("help")?"true":"false")<<endl;
     cout<<prm.getIstrFst("help")<<endl;
 
+    //int vl = prm.getArgFst("help", Prm::ArgType::Float);
+
+    print("as int: {}", prm.getArgFst<int>("help"));
+
+    //cout<<"get istr"<<dynamic_cast<string>(prm.getArgFst<int>("help"))<<endl;
 
     return 0;
 }

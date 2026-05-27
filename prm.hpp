@@ -3,12 +3,17 @@
 #include <vector>
 #include <algorithm>
 #include <print>
+#include <concepts>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::endl;
 using std::for_each;
+using std::stol;
+using std::stoi;
+using std::stod;
+using std::stof;
 
 //e.g. --help -h
 //e.g. --host 127.0.0.1            single
@@ -39,10 +44,12 @@ public:
 
     //lst prm
     bool lstArg{false};
+    bool pultArg{false};
     string lst{};
 
     //fst prm
     bool fstArg{false};
+    bool scdArg{false};
     string fst{};
 
     int setIstr(const string &nm)
@@ -82,6 +89,16 @@ public:
         return arg.front();
     }
 
+    string getScd()
+    {
+        if (pultArg == false || arg.at(1).starts_with("-")==false)
+        {
+            return string{};
+        }
+
+        return arg.at(2);
+    }
+
     string getLstLtr()
     {
         return arg.back();
@@ -98,9 +115,15 @@ public:
         return 0;
     }
 
+    int setPult()
+    {
+        pultArg=true;
+        return 0;
+    }
+
     string getLst()
     {
-        if (lstArg ==false || arg.back().starts_with("-"))
+        if (lstArg ==false || arg.back().starts_with("-") == false)
         {
             return string{};
         }
@@ -108,8 +131,92 @@ public:
         return arg.back();
     }
 
-    template<typename T>
-    T getArgIdx(int idx, T typ);
+    string getPult()
+    {
+        if (pultArg == false || arg.at(arg.size()-2).starts_with("-")==false)
+        {
+            return string{};
+        }
+
+        return arg.at(arg.size()-2);
+    }
+
+    enum class ArgType {
+        Float,
+        Double,
+        String,
+        IP,
+        Date,
+        Int,
+        Long
+    };
+
+    ///TODO ex
+    template<typename T >
+    requires (std::is_same<T, ArgType>::value==false)
+    T getArgFst(string arg)
+    {
+        //string s(arg);
+        string s{getIstrFst(arg)};
+
+        T rs;
+
+        if constexpr (typeid(T)==typeid(double))
+        {
+            rs = reinterpret_cast<T>(std::stod(s));
+        }
+        else if constexpr (typeid(T)==typeid(float))
+        {
+            rs = reinterpret_cast<T>(std::stof(s));
+        }
+        else if constexpr (typeid(T)==typeid(int))
+        {
+            rs = reinterpret_cast<T>(std::stoi(s));
+        }
+        else if constexpr (typeid(T)==typeid(long))
+        {
+            rs = reinterpret_cast<T>(std::stol(s));
+        }
+
+        return rs;
+    }
+
+    template<typename T = ArgType>
+    requires (std::is_same<T, ArgType>::value)
+    T getArgFst(string arg, T typ)
+    {
+        //string s(arg);
+        string s{getIstrFst(arg)};
+
+        T rs;
+
+        if (typ == ArgType::Double)
+        {
+            rs = dynamic_cast<T>(std::stod(s));
+        }
+        else if (typ==ArgType::Float)
+        {
+            rs = dynamic_cast<T>(std::stof(s));
+        }
+        else if (typeif(typ)==typeid(int))
+        {
+            rs = dynamic_cast<T>(std::stoi(s));
+        }
+        else if (typeif(typ)==typeid(long))
+        {
+            rs = dynamic_cast<T>(std::stol(s));
+        }
+
+        switch (typ)
+        {
+            case ArgType::Double:
+            {
+                rs=dynamic_cast<T>(std::stod(s));
+            }
+        }
+
+        return rs;
+    }
 
     string getArgLtr(int idx)
     {
