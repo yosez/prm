@@ -1,9 +1,14 @@
+#ifndef PRM_HPP
+#define PRM_HPP
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <print>
 #include <concepts>
+#include <tuple>
+#include "./ex.hpp"
 
 using std::cout;
 using std::string;
@@ -15,12 +20,17 @@ using std::stoi;
 using std::stod;
 using std::stof;
 
+class ArgumentNotDefinedExcept;
+
+
 //e.g. --help -h
 //e.g. --host 127.0.0.1            single
 //e.g. --on 127.0.0.1:8080          pair
 //e.g.
 
+class Prm;
 
+//class ExceptCommandNo
 
 class Prm
 {
@@ -36,8 +46,9 @@ public:
         string nm{};
         string abrv{};
 
-
         int cnt{0};
+
+        string desc{};
     };
 
     vector<Istr> istr{};
@@ -52,25 +63,32 @@ public:
     bool scdArg{false};
     string fst{};
 
-    int setIstr(const string &nm)
-    {
-        istr.push_back(Istr{nm});
 
-        return 0;
+    bool helpFlg{false};
+    string helpAbrv{};
+    string helpFull{};
+
+    int setIstr(const string &nm);
+
+    int setIstr(const string &nm, const string &abrv);
+
+    int setIstr(const string &nm, const string &abrv, const int &cnt);
+
+    int setIstr(const std::pair<string, string> & pair);
+
+
+    int addDesc(Istr istr, const string &desc);
+
+    int addDesc(const string &name, const string &desc);
+
+    void setHelp(bool barH =false, bool doubleBarHelp=true)
+    {
+
     }
 
-    int setIstr(const string &nm, const string &abrv)
+    string getHelp()
     {
-        istr.push_back(Istr{nm, abrv});
 
-        return 0;
-    }
-
-    int setIstr(const string &nm, const string &abrv, const int &cnt)
-    {
-        istr.push_back(Istr{nm, abrv, cnt});
-
-        return 0;
     }
 
     int setFst()
@@ -147,8 +165,15 @@ public:
         String,
         IP,
         Date,
-        Int,
-        Long
+        Int, //
+        Int8,
+        Int16,
+        Int32,
+        Int64,
+        Int128,
+        UInt32,
+        Long,
+        LongLong
     };
 
     ///TODO ex
@@ -177,6 +202,10 @@ public:
         {
             rs = reinterpret_cast<T>(std::stol(s));
         }
+        else if constexpr (typeid(T) == typeid(string))
+        {
+            rs = reinterpret_cast<T>(s);
+        }
 
         return rs;
     }
@@ -190,28 +219,57 @@ public:
 
         T rs;
 
-        if (typ == ArgType::Double)
-        {
-            rs = dynamic_cast<T>(std::stod(s));
-        }
-        else if (typ==ArgType::Float)
-        {
-            rs = dynamic_cast<T>(std::stof(s));
-        }
-        else if (typeif(typ)==typeid(int))
-        {
-            rs = dynamic_cast<T>(std::stoi(s));
-        }
-        else if (typeif(typ)==typeid(long))
-        {
-            rs = dynamic_cast<T>(std::stol(s));
-        }
+        // if (typ == ArgType::Double)
+        // {
+        //     rs = dynamic_cast<T>(std::stod(s));
+        // }
+        // else if (typ==ArgType::Float)
+        // {
+        //     rs = dynamic_cast<T>(std::stof(s));
+        // }
+        // else if (typ==ArgType::Int)
+        // {
+        //     rs = dynamic_cast<T>(std::stoi(s));
+        // }
+        // else if (typ==ArgType::Long)
+        // {
+        //     rs = dynamic_cast<T>(std::stol(s));
+        // }
+        // else if (typ == ArgType::String)
+        // {
+        //     rs = dynamic_cast<T>(s);
+        // }
 
         switch (typ)
         {
             case ArgType::Double:
             {
-                rs=dynamic_cast<T>(std::stod(s));
+                rs = dynamic_cast<T>(std::stod(s));
+                break;
+            }
+            case ArgType::Float:
+            {
+                rs = dynamic_cast<T>(std::stof(s));
+                break;
+            }
+            case ArgType::Int:
+            {
+                rs = dynamic_cast<T>(std::stoi(s));
+                break;
+            }
+            case ArgType::Long:
+            {
+                rs = dynamic_cast<T>(std::stol(s));
+                break;
+            }
+            case ArgType::String:
+            {
+                rs = dynamic_cast<T>(s);
+                break;
+            }
+            default:
+            {
+                throw ArgumentNotDefinedExcept();
             }
         }
 
@@ -292,6 +350,11 @@ public:
                 }
             }
         });
+
+        if (istrFlg==false || argFlg==false)
+        {
+            throw ArgumentNotDefinedExcept();
+        }
 
         return istrFlg&&argFlg;
     }
@@ -427,6 +490,12 @@ public:
 
     }
 
+
+private:
+    Istr findIstr(const string &nm);
+    Istr findIstrAbrv(const string &nm);
+    Istr findIstrFull(const string &nm);
+
     // string getIstrFrst(string istr)
     // {
     //     int psn=-1;
@@ -501,3 +570,4 @@ public:
 
     };
 };
+#endif
