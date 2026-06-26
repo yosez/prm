@@ -18,5 +18,27 @@ class ArgumentNotDefinedExcept : public exception
     };
 };
 
+//class ArgumentNot
+
+class InstructionNotHasSubinstructionExcept: public exception
+{
+    string msg{"Instruction does not permit subinstructions. "};
+
+    const char* what() const noexcept
+    {
+        return msg.c_str();
+    }
+};
+
+class SubinstructionNotDefinedExcept: public exception
+{
+    string msg{"Subinstruction not defined."};
+
+    const char* what() const noexcept
+    {
+        return msg.c_str();
+    }
+};
+
 
 #endif

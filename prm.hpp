@@ -32,15 +32,33 @@ class Prm;
 
 //class ExceptCommandNo
 
+
+/*
+ * arg = Argument
+ * prm = Parameter
+ * istr = Instruction
+ * abrv = Abbreviation
+ * subistr = Subinstruction
+ * fst = Firs.
+ * lst = Las.
+ *
+ */
+
 class Prm
 {
 public:
     int argCnt;
+    //const char** argIn;
     char** argIn;
 
     vector<string> arg;
 
+    //Prm()
+
     //prm pair "--output a.txt" or "-o a.txt"
+
+    struct Subistr;
+
     struct Istr
     {
         string nm{};
@@ -49,6 +67,16 @@ public:
         int cnt{0};
 
         string desc{};
+
+        bool hasSubistr{false};
+
+        vector<Subistr> sub{};
+    };
+
+    struct Subistr
+    {
+        string nm{};
+
     };
 
     vector<Istr> istr{};
@@ -68,6 +96,8 @@ public:
     string helpAbrv{};
     string helpFull{};
 
+    bool drctRd{true};
+
     int setIstr(const string &nm);
 
     int setIstr(const string &nm, const string &abrv);
@@ -81,83 +111,37 @@ public:
 
     int addDesc(const string &name, const string &desc);
 
-    void setHelp(bool barH =false, bool doubleBarHelp=true)
-    {
+    void setHelp(bool barH =false, bool doubleBarHelp=true);
 
-    }
+    string getHelp();
 
-    string getHelp()
-    {
+    void setSubistr(Istr &istr, const string &sub);
 
-    }
+    template<typename T>
+    T getSubistr(const Istr &istr, const string &sub);
 
-    int setFst()
-    {
-        fstArg=true;
-        return 0;
-    }
+    template<typename T>
+    T getSubistr(const string &nm, const string &sub);
 
-    string getFst()
-    {
-        if (fstArg ==false || arg.front().starts_with("-"))
-        {
-            return string{};
-        }
+    void setFst();
+    string getFst();
 
-        return arg.front();
-    }
+    void setScd();
 
-    string getScd()
-    {
-        if (pultArg == false || arg.at(1).starts_with("-")==false)
-        {
-            return string{};
-        }
+    string getScd();
 
-        return arg.at(2);
-    }
+    string getLstLtr();
 
-    string getLstLtr()
-    {
-        return arg.back();
-    }
+    string getFstLtr();
 
-    string getFstLtr()
-    {
-        return arg.front();
-    }
 
-    int setLst()
-    {
-        lstArg=true;
-        return 0;
-    }
+    void setLst();
 
-    int setPult()
-    {
-        pultArg=true;
-        return 0;
-    }
+    void setPult();
 
-    string getLst()
-    {
-        if (lstArg ==false || arg.back().starts_with("-") == false)
-        {
-            return string{};
-        }
+    string getLst();
 
-        return arg.back();
-    }
-
-    string getPult()
-    {
-        if (pultArg == false || arg.at(arg.size()-2).starts_with("-")==false)
-        {
-            return string{};
-        }
-
-        return arg.at(arg.size()-2);
-    }
+    string getPult();
 
     enum class ArgType {
         Float,
@@ -179,380 +163,46 @@ public:
     ///TODO ex
     template<typename T >
     requires (std::is_same<T, ArgType>::value==false)
-    T getArgFst(string arg)
-    {
-        //string s(arg);
-        string s{getIstrFst(arg)};
+    T getArgFst(string arg);
 
-        T rs;
-
-        if constexpr (typeid(T)==typeid(double))
-        {
-            rs = reinterpret_cast<T>(std::stod(s));
-        }
-        else if constexpr (typeid(T)==typeid(float))
-        {
-            rs = reinterpret_cast<T>(std::stof(s));
-        }
-        else if constexpr (typeid(T)==typeid(int))
-        {
-            rs = reinterpret_cast<T>(std::stoi(s));
-        }
-        else if constexpr (typeid(T)==typeid(long))
-        {
-            rs = reinterpret_cast<T>(std::stol(s));
-        }
-        else if constexpr (typeid(T) == typeid(string))
-        {
-            rs = reinterpret_cast<T>(s);
-        }
-
-        return rs;
-    }
-
-    template<typename T = ArgType>
+    template<typename T>
     requires (std::is_same<T, ArgType>::value)
-    T getArgFst(string arg, T typ)
-    {
-        //string s(arg);
-        string s{getIstrFst(arg)};
+    T getArgFst(string arg, T typ);
 
-        T rs;
 
-        // if (typ == ArgType::Double)
-        // {
-        //     rs = dynamic_cast<T>(std::stod(s));
-        // }
-        // else if (typ==ArgType::Float)
-        // {
-        //     rs = dynamic_cast<T>(std::stof(s));
-        // }
-        // else if (typ==ArgType::Int)
-        // {
-        //     rs = dynamic_cast<T>(std::stoi(s));
-        // }
-        // else if (typ==ArgType::Long)
-        // {
-        //     rs = dynamic_cast<T>(std::stol(s));
-        // }
-        // else if (typ == ArgType::String)
-        // {
-        //     rs = dynamic_cast<T>(s);
-        // }
 
-        switch (typ)
-        {
-            case ArgType::Double:
-            {
-                rs = dynamic_cast<T>(std::stod(s));
-                break;
-            }
-            case ArgType::Float:
-            {
-                rs = dynamic_cast<T>(std::stof(s));
-                break;
-            }
-            case ArgType::Int:
-            {
-                rs = dynamic_cast<T>(std::stoi(s));
-                break;
-            }
-            case ArgType::Long:
-            {
-                rs = dynamic_cast<T>(std::stol(s));
-                break;
-            }
-            case ArgType::String:
-            {
-                rs = dynamic_cast<T>(s);
-                break;
-            }
-            default:
-            {
-                throw ArgumentNotDefinedExcept();
-            }
-        }
+    string getArgLtr(int idx);
 
-        return rs;
-    }
 
-    string getArgLtr(int idx)
-    {
-        return string(arg[idx]);
-    }
-
-    // bool getIstr(const string &istr)
-    // {
-    //
-    //     bool flg=false;
-    //
-    //     std::for_each(arg.begin(), arg.end(), [istr, &flg](const string &s) {
-    //
-    //         cout<<s<<":"<<istr<<endl;
-    //         if (s.compare(istr)==0)
-    //         {
-    //             cout<<"chk ok"<<endl;
-    //             flg=true;
-    //         }
-    //
-    //     });
-    //
-    //     return flg;
-    // }
 
 
     ///PROCESSING
-    bool getIstr(const string &istrIn)
-    {
+    bool getIstr(const string &istrIn);
 
-        bool istrFlg=false;
-
-
-        cout<<istr.size()<<":"<<istr[0].nm<<":"<<istrIn<<endl;
-
-        //find in instr
-        for_each(istr.begin(), istr.end(), [vct = istr, istrIn, &istrFlg](const Istr &i) {
-
-
-            cout<<vct[0].nm<<":"<<istrIn<<endl;
-            cout<<i.nm<<":"<<istrIn<<endl;
-
-            if (i.nm.empty() ==false && istrIn.compare(i.nm)==0)
-            {
-                cout<<"chk ok nm"<<endl;
-                istrFlg=true;
-            }
-
-            else if (i.abrv.empty()==false && istrIn.compare(i.abrv)==0)
-            {
-                cout<<"chk ok abrv"<<endl;
-                istrFlg=true;
-            }
-
-
-        });
-
-        bool argFlg=false;
-        //find in arguments
-        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg](const string &s) {
-            if (s.starts_with("--"))
-            {
-                if (s.substr(2).compare(istrIn)==0)
-                {
-                    argFlg=true;
-                }
-            }
-            else if (s.starts_with("-"))
-            {
-                if (s.substr(1).compare(istrIn)==0)
-                {
-                    argFlg=true;
-                }
-            }
-        });
-
-        if (istrFlg==false || argFlg==false)
-        {
-            throw ArgumentNotDefinedExcept();
-        }
-
-        return istrFlg&&argFlg;
-    }
-
-    string getIstrFst(string istrIn)
-    {
-        int psn=-1;
-
-        vector<string>::iterator itr= arg.begin();
-
-        bool istrFlg=false;
-
-        //find in instruction
-        for_each(istr.begin(), istr.end(), [&istrIn,  &istrFlg](const Istr &s) {
-            if (s.nm.empty()==false && s.nm.compare(istrIn)==0)
-            {
-                cout<<"istr flg ok"<<endl;
-                istrFlg=true;
-            }
-            else if (s.abrv.empty()==false && s.abrv.compare(istrIn)==0)
-            {
-                cout<<"istr flg ok"<<endl;
-                istrFlg=true;
-            }
-
-
-        });
-
-        bool argFlg =false;
-
-        //find in
-        //arg is input arguments
-        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg, &itr, &psn, bgn= arg.begin()](const string &s) {
-            if (istrIn.starts_with("--"))
-            {
-                //arg inst cmp istrIn
-                if (s.substr(2).compare(istrIn)==0)
-                {
-                    cout<<"arg flg ok"<<endl;
-                    argFlg=true;
-
-                    psn = itr - bgn;
-                }
-            }
-            else if (s.starts_with("-"))
-            {
-                if (s.substr(2).compare(istrIn)==0)
-                {
-                    cout<<"arg flg ok"<<endl;
-                    argFlg=true;
-
-                    psn = itr - bgn;
-                }
-            }
-
-            ++itr;
-        });
-
-        //psn = argFlg && istrFlg ? itr - arg.begin() : -1;
-
-        cout<<"psn: "<<psn<<":"<<arg[psn]<<endl;
-
-        if (psn ==-1)
-        {
-            return string{};
-        }
-
-        return arg[psn+1];
-
-    }
-
+    string getIstrFst(string istrIn);
 
     ///TODO bdr chk
-    string getIstrScd(string istrIn)
-    {
-        int psn=-1;
+    string getIstrScd(string istrIn);
 
-        vector<string>::iterator itr= arg.begin();
-
-        bool istrFlg=false;
-
-        //find in instruction
-        for_each(istr.begin(), istr.end(), [&istrIn,  &istrFlg](const Istr &s) {
-            if (s.nm.empty()==false && s.nm.compare(istrIn))
-            {
-                istrFlg=true;
-            }
-            else if (s.abrv.empty()==false && istrIn.compare(s.abrv))
-            {
-                istrFlg=true;
-            }
-
-
-        });
-
-        bool argFlg =false;
-
-        //find in
-        //arg is input arguments
-        for_each(arg.begin(), arg.end(), [&istrIn, &argFlg, &itr, &psn, bgn = arg.begin()](const string &s) {
-            if (istrIn.starts_with("--"))
-            {
-                //arg inst cmp istrIn
-                if (s.substr(2).compare(istrIn)==0)
-                {
-                    argFlg=true;
-
-                    psn = itr - bgn;
-                }
-            }
-            else if (s.starts_with("-"))
-            {
-                if (s.substr(2).compare(istrIn)==0)
-                {
-                    argFlg=true;
-
-                    psn = itr - bgn;
-                }
-            }
-
-            ++itr;
-        });
-
-        cout<<"psn: "<<psn<<":"<<arg[psn]<<endl;
-
-        if (psn ==-1)
-        {
-            return string{};
-        }
-
-        ///TODO ex
-        return arg[psn+2];
-
-    }
-
-
-private:
-    Istr findIstr(const string &nm);
-    Istr findIstrAbrv(const string &nm);
-    Istr findIstrFull(const string &nm);
-
-    // string getIstrFrst(string istr)
+    // Prm(int argCnt, char* argIn[]): argCnt(argCnt)
     // {
-    //     int psn=-1;
+    //     arg = vector<string>(argCnt);
     //
-    //     for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
+    //     int i=0;
     //
-    //         //cout<<*it<<":"<<istr<<endl;
-    //         if (s.compare(istr)==0)
-    //         {
+    //     argIn = (char**)malloc (argCnt*sizeof(void*));
     //
-    //             psn = it - bgn;
-    //
-    //         }
-    //
-    //         ++it;
-    //     });
-    //
-    //     if (psn==-1)
+    //     for (i=0;i<argCnt;i++)
     //     {
-    //         return nullptr;
+    //         this->argIn[i] = const_cast<const char*>(argIn[i]);
+    //
+    //         arg[i] = argIn[i];
+    //
+    //         cout<<"prm ltr: "<<arg[i]<<endl;
     //     }
     //
-    //     return arg[psn+1];
-    // }
     //
-    // string getIstrScnd(string istr)
-    // {
-    //     int psn=-1;
-    //
-    //     std::for_each(arg.begin(), arg.end(), [it=arg.begin(), bgn = arg.begin(), istr, &psn](auto &s) mutable  {
-    //
-    //         //cout<<*it<<":"<<istr<<endl;
-    //         if (s.compare(istr)==0)
-    //         {
-    //
-    //             psn = it - bgn;
-    //
-    //         }
-    //
-    //         ++it;
-    //     });
-    //
-    //     if (psn==-1)
-    //     {
-    //         return nullptr;
-    //     }
-    //
-    //     return arg[psn+2];
-    // }
-
-
-
-    //
-    // string getFst()
-    // {
-    //     return arg.front();
-    // }
+    // };
 
     Prm(int argCnt, char* argIn[]): argCnt(argCnt), argIn(argIn)
     {
@@ -562,6 +212,8 @@ private:
 
         for (i=0;i<argCnt;i++)
         {
+            //(this->argIn)[i]=new char[]{(char*)argIn[i]};
+
             arg[i] = argIn[i];
 
             cout<<"prm ltr: "<<arg[i]<<endl;
@@ -569,5 +221,106 @@ private:
 
 
     };
+
+    template<typename T>
+    requires(std::is_same<T, ArgType>::value==false)
+    T getSubistr(const Istr &istr, const string &sub);
+
+    template<typename T=ArgType>
+    requires(std::is_same_v<T, ArgType>)
+    T getSubistr(const Istr &istr, const string &sub);
+
+
+private:
+    Istr findIstr(const string &nm);
+    Istr findIstrAbrv(const string &nm);
+    Istr findIstrFull(const string &nm);
+
+
+
 };
+
+//using Istr = Prm::Istr;
+using ArgType = Prm::ArgType;
+
+template<typename T>
+requires (std::is_same<T, ArgType>::value)
+T Prm::getArgFst(string arg, T typ)
+{
+    //string s(arg);
+    string s{getIstrFst(arg)};
+
+    T rs;
+
+
+    switch (typ)
+    {
+        case ArgType::Double:
+        {
+            rs = dynamic_cast<T>(std::stod(s));
+            break;
+        }
+        case ArgType::Float:
+        {
+            rs = dynamic_cast<T>(std::stof(s));
+            break;
+        }
+        case ArgType::Int:
+        {
+            rs = dynamic_cast<T>(std::stoi(s));
+            break;
+        }
+        case ArgType::Long:
+        {
+            rs = dynamic_cast<T>(std::stol(s));
+            break;
+        }
+        case ArgType::String:
+        {
+            rs = dynamic_cast<T>(s);
+            break;
+        }
+        default:
+        {
+            throw ArgumentNotDefinedExcept();
+        }
+    }
+
+    return rs;
+}
+
+template<typename T >
+requires (std::is_same<T, ArgType>::value==false)
+T Prm::getArgFst(string arg)
+{
+    //string s(arg);
+    string s{getIstrFst(arg)};
+
+    T rs;
+
+    if constexpr (typeid(T)==typeid(double))
+    {
+        rs = reinterpret_cast<T>(std::stod(s));
+    }
+    else if constexpr (typeid(T)==typeid(float))
+    {
+        rs = reinterpret_cast<T>(std::stof(s));
+    }
+    else if constexpr (typeid(T)==typeid(int))
+    {
+        rs = reinterpret_cast<T>(std::stoi(s));
+    }
+    else if constexpr (typeid(T)==typeid(long))
+    {
+        rs = reinterpret_cast<T>(std::stol(s));
+    }
+    else if constexpr (typeid(T) == typeid(string))
+    {
+        rs = reinterpret_cast<T>(s);
+    }
+
+    return rs;
+}
+
+
 #endif

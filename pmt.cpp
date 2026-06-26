@@ -16,7 +16,7 @@ using std::print;
 
 int main(int argCnt, char* arg[])
 {
-    Prm prm;
+    Prm prm(argCnt, arg); 
 
     //cout<<prm.getArgLtr(1)<<endl;
 

@@ -1,0 +1,1 @@
+g++ -std=c++23 prm.cpp pmt.cpp -o p

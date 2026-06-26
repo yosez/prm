@@ -1,0 +1,1 @@
+g++ -std=c++23 catch_amalgamated.cpp prm.cpp test.cpp -o t
