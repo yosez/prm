@@ -31,3 +31,18 @@ TEST_CASE("Test First Argument")
     CHECK(prm.getIstrFst("host").compare(string("127.0.0.1"))==0);
     //CHECK(1==1);
 }
+
+TEST_CASE("istr. second argument")
+{
+    vector<const char*> args{"0.1", "--host", "127.0.0.1", "6379"};
+    vector<char *> args2{};
+
+    for (auto str: args)
+    {
+        args2.push_back((char*)str);
+    }
+
+    Prm prm(args2.size(), args2.data());
+
+    CHECK(prm.getIstrScd("host").compare(string{"6379"})==0);
+}
