@@ -1,3 +1,4 @@
+
 #ifndef PRM_HPP
 #define PRM_HPP
 
@@ -6,10 +7,12 @@
 #include <vector>
 #include <algorithm>
 #include <any>
+#include <cassert>
 #include <print>
 #include <concepts>
 #include <tuple>
 #include "./ex.hpp"
+#include <typeinfo>
 #include <typeindex>
 
 using std::cout;
@@ -24,6 +27,7 @@ using std::stof;
 using std::stold;
 using std::any;
 using std::type_info;
+using std::type_index;
 
 class ArgumentNotDefinedExcept;
 
@@ -64,12 +68,19 @@ public:
 
     struct Subistr;
 
+    struct SubistrResult
+    {
+        any rsl;
+    };
+
     struct Subistr
     {
         vector<string> nm{};
         vector<string> ltr{};
 
-        vector<std::type_index> t{};
+        vector<type_index> t{};
+
+
 
         template <typename T>
         T getIdx(int psn)
@@ -98,17 +109,73 @@ public:
 
         }
 
+        
+
+        any getIdx(const int &idx)
+        {
+            any rs{};
+
+
+            if (t.at(idx)==type_index(typeid(int)))
+            {
+                //rs = stoi(ltr.at(idx));
+                return stoi(ltr.at(idx));
+                //return SubistrResult{rs};
+            }
+            else if (t.at(idx)==type_index(typeid(long)))
+            {
+                return stol(ltr.at(idx));
+            }
+            else if (t.at(idx)==type_index(typeid(float)))
+            {
+                return stof(ltr.at(idx));
+            }
+            else if (t.at(idx)==type_index(typeid(double)))
+            {
+                return stod(ltr.at(idx));
+            }
+
+            return rs;
+        }
+
+        any getIdx(const int &idx, const type_index &tp)
+        {
+            any rs{};
+
+            if (tp==type_index(typeid(int)))
+            {
+                return stoi(ltr.at(idx));
+            }
+            else if (tp==type_index(typeid(long)))
+            {
+                return stol(ltr.at(idx));
+            }
+            else if (tp==type_index(typeid(float)))
+            {
+                return stof(ltr.at(idx));
+            }
+            else if (tp==type_index(typeid(double)))
+            {
+                return stod(ltr.at(idx));
+            }
+
+            return rs;
+        }
+
+
+
         template <typename T>
         void setSub(const string &snm)
         {
             nm.push_back(snm);
         };
 
-        void setSub(const string &snm, const type_info tp)
+        void setSub(const string &snm, const type_info &tp)
         {
             nm.push_back(snm);
             t.push_back(tp);
         };
+
 
 
     };
@@ -221,12 +288,43 @@ public:
     requires (std::is_same<T, ArgType>::value)
     T getArgFst(string arg, T typ);
 
-
+    //std::any getArgFst(const string &arg, const type_index &tp);
 
     string getArgLtr(int idx);
 
 
+    std::any getArgFst(const string &arg, const type_index &tp)
+    {
+        //string s(arg);
+        //string s{"abc"};
+        string s{getIstrFst(arg)};
 
+        std::any rs;
+
+        if (tp==type_index(typeid(double)))
+        {
+            rs = (std::stod(s));
+        }
+        else if (tp==type_index(typeid(float)))
+        {
+            rs = (std::stof(s));
+        }
+        else if (tp == type_index(typeid(int)))
+        {
+            rs = (std::stoi(s));
+        }
+        else if (tp == type_index(typeid(long)))
+        {
+            rs = (std::stol(s));
+        }
+        else if (tp == type_index(typeid(string)))
+        {
+            rs = s;
+        }
+
+
+        return rs;
+    }
 
     ///PROCESSING
     bool getIstr(const string &istrIn);
@@ -346,6 +444,8 @@ T Prm::getArgFst(string arg, T typ)
 
     return rs;
 }
+
+
 
 template<typename T >
 requires (std::is_same<T, ArgType>::value==false)

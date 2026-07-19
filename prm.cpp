@@ -121,51 +121,7 @@ Prm::Istr Prm::findIstrAbrv(const string &istrIn)
 
 };
 
-// template<typename T>
-// requires (std::is_same<T, ArgType>::value)
-// T Prm::getArgFst(string arg, T typ)
-// {
-//     //string s(arg);
-//     string s{getIstrFst(arg)};
-//
-//     T rs;
-//
-//
-//     switch (typ)
-//     {
-//         case ArgType::Double:
-//         {
-//             rs = dynamic_cast<T>(std::stod(s));
-//             break;
-//         }
-//         case ArgType::Float:
-//         {
-//             rs = dynamic_cast<T>(std::stof(s));
-//             break;
-//         }
-//         case ArgType::Int:
-//         {
-//             rs = dynamic_cast<T>(std::stoi(s));
-//             break;
-//         }
-//         case ArgType::Long:
-//         {
-//             rs = dynamic_cast<T>(std::stol(s));
-//             break;
-//         }
-//         case ArgType::String:
-//         {
-//             rs = dynamic_cast<T>(s);
-//             break;
-//         }
-//         default:
-//         {
-//             throw ArgumentNotDefinedExcept();
-//         }
-//     }
-//
-//     return rs;
-// }
+
 
 
 string Prm::getArgLtr(int idx)

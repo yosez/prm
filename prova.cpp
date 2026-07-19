@@ -3,13 +3,24 @@
 #define CATCH_CONFIG_MAIN
 #include <print>
 #include <vector>
+
+#include <typeinfo>
+#include <any>
+#include <typeindex>
 #include "prm.hpp"
 
 class Prm;
 using std::print;
 using std::string;
+using std::type_index;
+using std::type_info;
 
-TEST_CASE("Test First Argument")
+vector<char *>gnrArg(int num, ...)
+{
+
+}
+
+TEST_CASE(" First Arg.")
 {
     // const char *arr[6]={"0.1","123","--host","127.0.0.1","123","ltr"};
     //
@@ -45,4 +56,22 @@ TEST_CASE("istr. second argument")
     Prm prm(args2.size(), args2.data());
 
     CHECK(prm.getIstrScd("host").compare(string{"6379"})==0);
+}
+
+TEST_CASE("subistr prova")
+{
+    Prm::Subistr sub{{"hel","guangming"}, {"123","12345"}};
+
+    print("sub.ltr: {}", sub.ltr[1]);
+    CHECK(std::any_cast<int>(sub.getIdx(1, type_index(typeid(int))))==12345);
+
+}
+
+TEST_CASE("subistr prova n. 2 ")
+{
+    Prm::Subistr sub{{"hel","guangming"}, {"123","12345"}};
+
+    print("sub.ltr: {}", sub.ltr[0]);
+    CHECK(std::any_cast<int>(sub.getIdx(0))==123);
+
 }

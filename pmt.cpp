@@ -34,7 +34,7 @@ int main(int argCnt, char* arg[])
 
     //int vl = prm.getArgFst("help", Prm::ArgType::Float);
 
-    print("as int: {}", prm.getArgFst<int>("help"));
+    ///print("as int: {}", prm.getArgFst<int>("help"));
 
     //cout<<"get istr"<<dynamic_cast<string>(prm.getArgFst<int>("help"))<<endl;
 
