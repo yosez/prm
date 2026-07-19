@@ -384,7 +384,11 @@ Prm::Istr Prm::findIstrFull(const string &istrIn)
 
 };
 
+template <typename T>
+void setSubIstr(const string &nm, const string  &sub)
+{
 
+}
 
 string Prm::getIstrFst(string istrIn)
 {

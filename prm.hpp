@@ -5,10 +5,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <any>
 #include <print>
 #include <concepts>
 #include <tuple>
 #include "./ex.hpp"
+#include <typeindex>
 
 using std::cout;
 using std::string;
@@ -19,6 +21,9 @@ using std::stol;
 using std::stoi;
 using std::stod;
 using std::stof;
+using std::stold;
+using std::any;
+using std::type_info;
 
 class ArgumentNotDefinedExcept;
 
@@ -59,6 +64,55 @@ public:
 
     struct Subistr;
 
+    struct Subistr
+    {
+        vector<string> nm{};
+        vector<string> ltr{};
+
+        vector<std::type_index> t{};
+
+        template <typename T>
+        T getIdx(int psn)
+        {
+
+            if constexpr (typeid(T)==typeid(int))
+            {
+                return stoi(ltr.at(psn));
+            }
+            else if constexpr (typeid(T)==typeid(float))
+            {
+                return stof(ltr.at(psn));
+            }
+            else if constexpr (typeid(T)==typeid(double))
+            {
+                return stod(ltr.at(psn));
+            }
+            else if constexpr (typeid(T)==typeid(long double))
+            {
+                return stold(ltr.at(psn));
+            }
+            else if constexpr(typeid(T)==typeid(string))
+            {
+                return string(ltr.at(psn));
+            }
+
+        }
+
+        template <typename T>
+        void setSub(const string &snm)
+        {
+            nm.push_back(snm);
+        };
+
+        void setSub(const string &snm, const type_info tp)
+        {
+            nm.push_back(snm);
+            t.push_back(tp);
+        };
+
+
+    };
+
     struct Istr
     {
         string nm{};
@@ -70,14 +124,12 @@ public:
 
         bool hasSubistr{false};
 
-        vector<Subistr> sub{};
-    };
-
-    struct Subistr
-    {
-        string nm{};
+        Subistr sub{};
 
     };
+
+
+
 
     vector<Istr> istr{};
 
@@ -221,6 +273,12 @@ public:
 
 
     };
+
+    // template <typename T>
+    // void setSubIstr(Istr &istr, const string &sub);
+    
+    template <typename T>
+    void setSubIstr(const string &nm, const string  &sub);
 
     template<typename T>
     requires(std::is_same<T, ArgType>::value==false)
